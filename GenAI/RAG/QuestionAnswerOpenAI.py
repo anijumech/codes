@@ -33,7 +33,7 @@ all_chunks = "...\n...".join(item.page_content for item in results)
 
 # Initialize the OpenAI
 
-client = OpenAI(api_key="")
+client = OpenAI()
 final_query = "Here is the Context using RAG:" + all_chunks + "\n" + "Here is the Question from the User:" + question
 response = client.responses.create(model="gpt-5.6-luna", input=final_query)
 answer = response.output_text
