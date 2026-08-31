@@ -16,7 +16,7 @@ User Question ──→ Embedding ──→ Similarity Search
 '''
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from openai import OpenAI
+from ollama import chat
 
 # Get the question from user
 question = input("what do you want to ask? ")
@@ -31,10 +31,14 @@ results = vector_db.similarity_search(question, k=4)
 # Join all the chunks together
 all_chunks = "...\n...".join(item.page_content for item in results)
 
-# Initialize the OpenAI
+# Initialize the Ollama
 
-client = OpenAI(api_key="")
 final_query = "Here is the Context using RAG:" + all_chunks + "\n" + "Here is the Question from the User:" + question
-response = client.responses.create(model="gpt-5.6-luna", input=final_query)
-answer = response.output_text
+response = chat(model="gemma4", messages=[{
+    "role": "user",
+    "content": final_query
+    }]
+    )
+answer = response.message.content
+
 print("Here is the Answer to you Question -> ", answer)
