@@ -3,12 +3,15 @@ from bs4 import BeautifulSoup
 
 
 def print_secret_message(url):
+
+    #extract url and parse the table
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
     table = soup.find("table")
     data = []
 
+    # go through every row and try to pull out x, char, y
     for row in table.find_all("tr"):
         cells = row.find_all("td")
 
@@ -24,10 +27,11 @@ def print_secret_message(url):
     if not data:
         return
 
+    #grid size
     max_x = max(x for x, y, char in data)
     max_y = max(y for x, y, char in data)
 
-    grid = [[" "] * (max_x + 1) for _ in range(max_y + 1)]
+    grid = [[" "] * (max_x + 1) for i in range(max_y + 1)]
 
     for x, y, char in data:
         grid[max_y - y][x] = char
@@ -35,7 +39,6 @@ def print_secret_message(url):
     for row in grid:
         print("".join(row))
 
-
-print_secret_message(
-    "https://docs.google.com/document/d/e/2PACX-1vSvM5gDlNvt7npYHhp_XfsJvuntUhq184By5xO_pA4b_gCWeXb6dM6ZxwN8rE6S4ghUsCj2VKR21oEP/pub"
-)
+# get the url from user
+url = input("Enter the google doc url ->")
+print_secret_message(url)
